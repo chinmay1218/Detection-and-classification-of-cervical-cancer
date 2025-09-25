@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow p-4">
+        <h2 class="text-primary text-center">AI Scan Analysis Result</h2>
+
+        <div class="mt-4">
+            <p><strong>Findings:</strong></p>
+            <div class="alert alert-info">{{ findings }}</div>
+
+            <p><strong>Diagnosis:</strong></p>
+            <div class="alert alert-success">{{ diagnosis }}</div>
+
+            <p><strong>Recommendations:</strong></p>
+            <div class="alert alert-warning">{{ recommendations }}</div>
+        </div>
+
+        <a href="{% url 'patient_dashboard' %}" class="btn btn-secondary mt-3">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

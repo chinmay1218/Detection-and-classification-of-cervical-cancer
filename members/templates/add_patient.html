@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .page-title {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #1e293b;
+        font-size: 2rem;
+        font-weight: 600;
+    }
+
+    .form-section {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1.2rem;
+        color: #1e293b;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .section-title i {
+        color: #3b82f6;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        color: #4b5563;
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .checkbox-group {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .checkbox-label {
+        color: #4b5563;
+        font-size: 0.95rem;
+    }
+
+    .file-upload {
+        border: 2px dashed #e5e7eb;
+        border-radius: 8px;
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .file-upload:hover {
+        border-color: #3b82f6;
+        background: #f8fafc;
+    }
+
+    .file-upload i {
+        font-size: 2rem;
+        color: #3b82f6;
+        margin-bottom: 1rem;
+    }
+
+    .upload-text {
+        color: #4b5563;
+        margin-bottom: 0.5rem;
+    }
+
+    .upload-subtext {
+        color: #9ca3af;
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        gap: 0.5rem;
+    }
+
+    .btn-primary {
+        background: #3b82f6;
+        color: white;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
+    }
+
+    .btn-outline {
+        border: 1px solid #e5e7eb;
+        background: white;
+        color: #4b5563;
+    }
+
+    .btn-outline:hover {
+        border-color: #3b82f6;
+        color: #3b82f6;
+        transform: translateY(-1px);
+    }
+
+    .form-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+</style>
+
+<div class="container">
+    <h1 class="page-title">Add Patient Details</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-section">
+            <h2 class="section-title">
+                <i class="fas fa-user"></i>
+                Personal Information
+            </h2>
+            <div class="form-group">
+                <label class="form-label" for="name">Full Name</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="age">Age</label>
+                <input type="number" class="form-control" id="age" name="age" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="mobile_number">Mobile Number</label>
+                <input type="tel" class="form-control" id="mobile_number" name="mobile_number" 
+                       pattern="[0-9]{10}" title="Please enter a valid 10-digit mobile number" required>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2 class="section-title">
+                <i class="fas fa-notes-medical"></i>
+                Medical Information
+            </h2>
+            <div class="form-group">
+                <label class="form-label" for="symptoms">Current Symptoms</label>
+                <textarea class="form-control" id="symptoms" name="symptoms" rows="3" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Additional Symptoms</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="weight_loss" name="weight_loss">
+                        <label class="checkbox-label" for="weight_loss">Weight Loss</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="last_checkup">Last Checkup Date</label>
+                <input type="date" class="form-control" id="last_checkup" name="last_checkup">
+            </div>
+            <div class="form-group">
+
+            <div class="form-group">
+                <label class="form-label">Medical History</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="family_history" name="family_history">
+                        <label class="checkbox-label" for="family_history">Family History of Cancer</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2 class="section-title">
+                <i class="fas fa-x-ray"></i>
+                Medical Scans
+            </h2>
+            <div class="file-upload" onclick="document.getElementById('scans').click()">
+                <input type="file" id="scans" name="scans" multiple accept="image/*" style="display: none;">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <div class="upload-text">Click to upload your CT scans</div>
+                <div class="upload-subtext">or drag and drop your files here</div>
+            </div>
+        </div>
+
+        <div class="form-buttons">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                Save Details
+            </button>
+            <a href="{% url 'patient_dashboard' %}" class="btn btn-outline">
+                <i class="fas fa-times"></i>
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+
+<script>
+    const fileUpload = document.querySelector('.file-upload');
+    const fileInput = document.getElementById('scans');
+    const uploadText = document.querySelector('.upload-text');
+    const uploadSubtext = document.querySelector('.upload-subtext');
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        fileUpload.addEventListener(eventName, e => {
+            e.preventDefault();
+            fileUpload.style.borderColor = '#3b82f6';
+            fileUpload.style.background = '#f8fafc';
+        });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        fileUpload.addEventListener(eventName, e => {
+            e.preventDefault();
+            fileUpload.style.borderColor = '#e5e7eb';
+            fileUpload.style.background = 'white';
+        });
+    });
+
+    fileUpload.addEventListener('drop', e => {
+        e.preventDefault();
+        fileInput.files = e.dataTransfer.files;
+        updateFileList();
+    });
+
+    fileInput.addEventListener('change', updateFileList);
+
+    function updateFileList() {
+        if (fileInput.files.length > 0) {
+            uploadText.textContent = 'Selected Files:';
+            uploadSubtext.textContent = Array.from(fileInput.files)
+                .map(file => file.name)
+                .join(', ');
+        }
+    }
+</script>
+{% endblock %}

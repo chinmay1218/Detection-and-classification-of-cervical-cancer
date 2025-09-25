@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Tumor Detection Results</h2>
+<p>Tumor Detected: {{ tumor_detection.tumor_detected }}</p>
+<p>Type: {{ tumor_detection.tumor_type }}</p>
+<p>Confidence Score: {{ tumor_detection.confidence_score }}</p>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Medical Reports</h2>
+<ul>
+    {% for report in reports %}
+    <li>{{ report.report_type }} - Generated on: {{ report.generated_at }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
