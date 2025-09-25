@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cervical Cancer Detection System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* Navbar Styling */
+        .navbar-custom {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 0.75rem 0;
+        }
+
+        .navbar-brand {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1e293b !important;
+            letter-spacing: -0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            color: var(--primary) !important;
+        }
+
+        .nav-link {
+            color: #64748b !important;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin: 0 0.25rem;
+        }
+
+        .nav-link:hover {
+            color: var(--primary) !important;
+            background: #f1f5f9;
+        }
+
+        .nav-item .active {
+            color: var(--primary) !important;
+            background: #f1f5f9;
+        }
+
+        .notification-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            color: white !important;
+            border-radius: 50%;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+            font-weight: 600;
+        }
+
+        /* Mobile Navigation */
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+            background: #f1f5f9;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(30, 41, 59, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        @media (max-width: 991.98px) {
+            .navbar-collapse {
+                background: white;
+                padding: 1rem;
+                border-radius: 12px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+                margin-top: 1rem;
+            }
+
+            .nav-link {
+                padding: 0.75rem 1rem;
+                margin: 0.25rem 0;
+            }
+        }
+
+        /* Content Container */
+        .content-container {
+            padding: 2rem 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-Cervical me-2"></i>
+                Cervical Cancer Detection
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if not user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register_patient' %}">
+                                <i class="fas fa-user-plus me-2"></i>Register as Patient
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <!-- <a class="nav-link" href="{% url 'register_radiologist' %}">
+                                <i class="fas fa-user-md me-2"></i>Register as Radiologist
+                            </a> -->
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'user_login' %}">
+                                <i class="fas fa-sign-in-alt me-2"></i>Login
+                            </a>
+                        </li>
+                    {% else %}
+                    {% if user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register_radiologist' %}">
+                            <i class="fas fa-user-md me-2"></i>Add Doctor
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin_dashboard' %}">
+                            <i class="fas fa-chart-line me-2"></i>Admin Dashboard
+                        </a>
+                    </li>
+                
+                        {% elif user.is_staff %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'radiologist_dashboard' %}">
+                                    <i class="fas fa-chart-line me-2"></i>Dashboard
+                                </a>
+                            </li>
+                        {% elif user.is_active %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'patient_dashboard' %}">
+                                    <i class="fas fa-home me-2"></i>Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'update_patient_details' %}">
+                                    <i class="fas fa-user-edit me-2"></i>Update Details
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'view_notifications' %}">
+                                    <i class="fas fa-bell me-2"></i>Notifications
+                                    {% if unread_notifications_count > 0 %}
+                                        <span class="notification-badge">{{ unread_notifications_count }}</span>
+                                    {% endif %}
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .custom-container {
+        max-width: 700px;
+        margin: auto;
+        background: linear-gradient(to right, #ffffff, #f8f9fa);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease-in-out;
+    }
+    .custom-container:hover {
+        transform: scale(1.02);
+    }
+    .info-text {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #444;
+        padding: 8px 0;
+        border-bottom: 1px solid #ddd;
+    }
+    .highlight-text {
+        font-weight: bold;
+        color: #0056b3;
+    }
+    .file-upload {
+        border: 2px dashed #007bff;
+        border-radius: 10px;
+        padding: 20px;
+        background-color: #f0f8ff;
+        transition: all 0.3s ease-in-out;
+        text-align: center;
+    }
+    .file-upload:hover {
+        background-color: #e0f0ff;
+        border-color: #0056b3;
+    }
+    .send-btn {
+        background: #28a745;
+        color: white;
+        transition: all 0.3s;
+        font-size: 1rem;
+    }
+    .send-btn:hover {
+        background: #218838;
+        transform: scale(1.05);
+    }
+    .cancel-btn {
+        background: #ffc107;
+        color: black;
+        transition: all 0.3s;
+        font-size: 1rem;
+    }
+    .cancel-btn:hover {
+        background: #e0a800;
+        transform: scale(1.05);
+    }
+    .image-preview {
+        margin-top: 15px;
+        border-radius: 10px;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.15);
+        max-width: 100%;
+        height: auto;
+        display: none;
+    }
+    .file-info {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: #555;
+    }
+    .error-message {
+        color: red;
+        font-weight: bold;
+        display: none;
+    }
+</style>
+
+<div class="container mt-5">
+    <h2 class="text-center text-primary mb-4">Send Report to Doctor</h2>
+
+    <div class="custom-container">
+        <p class="info-text"><strong>Patient ID:</strong> <span class="highlight-text">{{ patient.id }}</span></p>
+        <p class="info-text"><strong>Patient Name:</strong> <span class="highlight-text">{{ patient.name }}</span></p>
+
+        <form method="POST" enctype="multipart/form-data" onsubmit="return validateFileSizes();">
+            {% csrf_token %}
+
+            {% if error %}
+                <p class="text-danger text-center">{{ error }}</p>
+            {% endif %}
+
+            <p class="info-text"><strong>Doctor Email:</strong> 
+                <input type="email" name="doctor_email" class="form-control shadow-sm" placeholder="Enter doctor's email" required>
+            </p>
+
+            <p class="info-text"><strong>Report Title:</strong> 
+                <input type="text" name="report_title" class="form-control shadow-sm" placeholder="Enter report title" required>
+            </p>
+
+            <p class="info-text"><strong>Additional Notes:</strong> 
+                <textarea name="additional_notes" class="form-control shadow-sm" rows="3" placeholder="Enter any additional notes (optional)"></textarea>
+            </p>
+
+            <!-- Upload Report Section -->
+            <div class="file-upload">
+                <h5>Attach Report Files (PDF, Images, etc.)</h5>
+                <input type="file" id="report_files" class="form-control shadow-sm" name="report_files" accept=".pdf,.jpg,.jpeg,.png" multiple required onchange="previewFiles()">
+                <div id="fileInfo" class="file-info"></div>
+                <div id="previewContainer"></div>
+                <p id="errorMessage" class="error-message">Each file must be less than 5MB.</p>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn send-btn px-5 py-2 rounded-pill shadow-sm">
+                    <i class="bi bi-send"></i> Send Report
+                </button>
+                <a href="{% url 'patient_dashboard' %}" class="btn cancel-btn px-5 py-2 rounded-pill shadow-sm">
+                    <i class="bi bi-arrow-left"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function previewFiles() {
+        const files = document.getElementById("report_files").files;
+        const previewContainer = document.getElementById("previewContainer");
+        const fileInfo = document.getElementById("fileInfo");
+        previewContainer.innerHTML = "";
+        fileInfo.innerHTML = "";
+
+        Array.from(files).forEach(file => {
+            const fileType = file.type;
+            const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+            fileInfo.innerHTML += `<div>${file.name} (${sizeMB} MB)</div>`;
+
+            if (fileType.includes("image")) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    img.className = "image-preview";
+                    img.style.display = "block";
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    function validateFileSizes() {
+        const files = document.getElementById("report_files").files;
+        const errorMessage = document.getElementById("errorMessage");
+
+        for (let i = 0; i < files.length; i++) {
+            if (files[i].size > 5 * 1024 * 1024) {
+                errorMessage.style.display = "block";
+                return false;
+            }
+        }
+
+        errorMessage.style.display = "none";
+        return true;
+    }
+</script>
+{% endblock %}
